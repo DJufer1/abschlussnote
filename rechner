@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abschlussprüfungs-Rechner (CH)</title>
+    <!-- Lade Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Setze die Schriftart auf Inter für modernes Aussehen */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            padding: 30px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        input[type="number"] {
+            /* Einheitlicher Input-Stil */
+            transition: all 0.2s;
+        }
+        .input-group label {
+            font-weight: 600;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'swiss-red': '#E52323',
+                        'swiss-blue': '#003F87',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="card">
+        <h1 class="text-3xl font-extrabold text-swiss-blue mb-4">Abschlussprüfungs-Rechner (CH)</h1>
+        <p class="text-gray-600 mb-6">
+            Berechnen Sie, welche Note Sie im Prüfungsbereich <span class="font-bold text-swiss-red">Berufskundliche Kenntnisse (BKU) (3-fach)</span> benötigen, um Ihre Zielgesamtnote zu erreichen.
+        </p>
+
+        <!-- Zielnote (Target Grade) -->
+        <div class="mb-6 border-b pb-4">
+            <div class="flex items-center justify-between input-group">
+                <label for="targetNote" class="text-lg text-swiss-blue flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.636-.921 1.936 0l3.725 11.458a1 1 0 00.95.69h12.382c.969 0 1.371 1.243.588 1.81l-10.082 7.33a1 1 0 00-.36 1.118l3.725 11.458c.3.921-.755 1.688-1.54 1.118l-10.082-7.33a1 1 0 00-1.175 0l-10.082 7.33c-.785.57-1.84-.197-1.54-1.118l3.725-11.458a1 1 0 00-.36-1.118L.716 1.94c-.783-.567-.381-1.81.588-1.81h12.382a1 1 0 00.95-.69L11.049 2.927z"></path></svg>
+                    Gewünschte Zielgesamtnote (G):
+                </label>
+                <input type="number" id="targetNote" value="4.0" min="1.0" max="6.0" step="0.1"
+                       class="w-24 p-2 border border-swiss-blue rounded-lg text-lg text-center font-bold focus:ring-2 focus:ring-swiss-blue">
+            </div>
+            <p class="text-sm text-gray-500 mt-1">Die Gesamtnote muss mindestens 4.0 sein, um zu bestehen.</p>
+        </div>
+
+
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Bekannte Noten (Bereits erreicht)</h2>
+
+        <!-- Grid für die Noteneingaben -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Praktische Arbeit (3x) -->
+            <div class="input-group p-3 bg-red-50 rounded-lg">
+                <label for="notePA" class="text-sm block text-gray-700">Praktische Arbeit (IPA) (3-fach)</label>
+                <input type="number" id="notePA" value="4.5" min="1.0" max="6.0" step="0.1"
+                       class="w-full mt-1 p-2 border border-red-300 rounded-lg text-base">
+            </div>
+
+            <!-- Allgemeinbildung (2x) -->
+            <div class="input-group p-3 bg-yellow-50 rounded-lg">
+                <label for="noteAB" class="text-sm block text-gray-700">Allgemeinbildung (2-fach)</label>
+                <input type="number" id="noteAB" value="4.0" min="1.0" max="6.0" step="0.1"
+                       class="w-full mt-1 p-2 border border-yellow-300 rounded-lg text-base">
+            </div>
+
+            <!-- Erfahrungsnote Sub-Komponenten (Praxis u. Schule) -->
+            <div class="input-group p-3 bg-purple-50 rounded-lg">
+                <label for="noteBP" class="text-sm block text-gray-700">Erfahrungsnote Praxis (1-fach)</label>
+                <input type="number" id="noteBP" value="5.0" min="1.0" max="6.0" step="0.1"
+                       class="w-full mt-1 p-2 border border-purple-300 rounded-lg text-base">
+            </div>
+
+            <div class="input-group p-3 bg-purple-50 rounded-lg">
+                <label for="noteBU" class="text-sm block text-gray-700">Erfahrungsnote Schule (1-fach)</label>
+                <input type="number" id="noteBU" value="4.5" min="1.0" max="6.0" step="0.1"
+                       class="w-full mt-1 p-2 border border-purple-300 rounded-lg text-base">
+            </div>
+        </div>
+
+        <!-- NEUER BERECHNEN BUTTON -->
+        <div class="mt-6">
+            <button onclick="calculateRequiredGrade()"
+                    class="w-full p-3 bg-swiss-blue hover:bg-opacity-90 text-white text-xl font-bold rounded-lg shadow-lg transition duration-200 ease-in-out transform hover:scale-[1.01]">
+                Berechnen
+            </button>
+        </div>
+        <!-- Ende NEUER BERECHNEN BUTTON -->
+
+        <!-- Trennlinie und Ergebnisanzeige -->
+        <div class="mt-8 pt-4 border-t-4 border-dashed border-gray-200">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Erforderliche Note QV BKU</h2>
+            <div id="resultBox" class="p-4 rounded-xl text-center shadow-md bg-gray-100 transition-all duration-300">
+                <p class="text-lg text-gray-700 mb-2">Erforderliche Note in Berufskundliche Kenntnisse (BKU) (3-fach):</p>
+                <p id="requiredNote" class="text-5xl font-extrabold text-swiss-red">?</p>
+                <p id="statusMessage" class="mt-3 text-base font-semibold text-gray-700">
+                    Klicken Sie auf 'Berechnen', um das Ergebnis zu sehen.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Berechnet die erforderliche Note in Berufskenntnisse (BKU)
+         * um die Zielgesamtnote zu erreichen.
+         *
+         * Formel (Gesamtnote = (3*PA + 3*BKU + 2*AB + 1*BP + 1*BU) / 10):
+         * BKU = (10 * Zielnote - (3*PA + 2*AB + 1*BP + 1*BU)) / 3
+         */
+        function calculateRequiredGrade() {
+            const targetNote = parseFloat(document.getElementById('targetNote').value);
+            const notePA = parseFloat(document.getElementById('notePA').value);
+            const noteAB = parseFloat(document.getElementById('noteAB').value);
+            const noteBP = parseFloat(document.getElementById('noteBP').value);
+            const noteBU = parseFloat(document.getElementById('noteBU').value);
+
+            const requiredNoteElement = document.getElementById('requiredNote');
+            const statusMessageElement = document.getElementById('statusMessage');
+            const resultBox = document.getElementById('resultBox');
+
+            // 1. Eingabevalidierung
+            if (isNaN(targetNote) || isNaN(notePA) || isNaN(noteAB) || isNaN(noteBP) || isNaN(noteBU)) {
+                requiredNoteElement.textContent = '-';
+                statusMessageElement.textContent = 'Bitte alle Noten eingeben.';
+                resultBox.className = 'p-4 rounded-xl text-center shadow-md bg-gray-100 transition-all duration-300';
+                return;
+            }
+
+            // Stelle sicher, dass Noten im Schweizer System (1.0 - 6.0) liegen
+            const allNotes = [targetNote, notePA, noteAB, noteBP, noteBU];
+            if (allNotes.some(note => note < 1.0 || note > 6.0)) {
+                requiredNoteElement.textContent = 'Fehler';
+                statusMessageElement.textContent = 'Ungültige Eingabe: Noten müssen zwischen 1.0 und 6.0 liegen.';
+                resultBox.className = 'p-4 rounded-xl text-center shadow-md bg-red-100 transition-all duration-300';
+                return;
+            }
+
+            // 2. Berechnung der bekannten gewichteten Summe
+            // Gewichtung: PA(3) + AB(2) + BP(1) + BU(1) = 7
+            const weightedSumKnown = (3 * notePA) + (2 * noteAB) + (1 * noteBP) + (1 * noteBU);
+
+            // 3. Berechnung der erforderlichen Gesamtgewichtung
+            const requiredTotalWeightedSum = targetNote * 10;
+
+            // 4. Berechnung des erforderlichen gewichteten Beitrags von BKU (3x)
+            const requiredWeightedBKU = requiredTotalWeightedSum - weightedSumKnown;
+
+            // 5. Berechnung der erforderlichen Note BKU
+            const requiredBKU = requiredWeightedBKU / 3;
+
+            // 6. Formatierung und Ausgabe
+            const finalRequiredBKU = Math.round(requiredBKU * 100) / 100; // Auf 2 Nachkommastellen runden
+
+            requiredNoteElement.textContent = finalRequiredBKU.toFixed(2);
+            
+            // Statusmeldungen anpassen (Schweizer Notensystem: 4.0 = bestanden)
+            if (finalRequiredBKU < 1.0) {
+                // Das Ziel ist auch mit der niedrigsten Note (1.0) in BKU erreichbar,
+                // oder es wurde sogar übererfüllt.
+                requiredNoteElement.textContent = '1.0';
+                statusMessageElement.textContent = `Zielnote ${targetNote.toFixed(1)} ist gesichert. Sie benötigen minimal 1.0 in BKU.`;
+                resultBox.className = 'p-4 rounded-xl text-center shadow-md bg-green-100 transition-all duration-300';
+            } else if (finalRequiredBKU <= 4.0) {
+                // Im Idealbereich, leicht erreichbar
+                statusMessageElement.textContent = `Sie benötigen diese Note in BKU, um die Zielnote ${targetNote.toFixed(1)} zu erreichen.`;
+                resultBox.className = 'p-4 rounded-xl text-center shadow-md bg-yellow-100 transition-all duration-300';
+            } else if (finalRequiredBKU > 4.0 && finalRequiredBKU <= 6.0) {
+                // Herausfordernd, aber möglich
+                statusMessageElement.textContent = `Achtung: Sie benötigen eine höhere Note als 4.0 in BKU, um die Zielnote ${targetNote.toFixed(1)} zu erreichen.`;
+                resultBox.className = 'p-4 rounded-xl text-center shadow-md bg-orange-100 transition-all duration-300';
+            } else {
+                // Ziel nicht erreichbar, selbst mit 6.0 in BKU
+                requiredNoteElement.textContent = 'Ziel Unerreichbar';
+                const maxNote = ((weightedSumKnown + 3 * 6) / 10).toFixed(2);
+                statusMessageElement.textContent = `Die Zielnote ${targetNote.toFixed(1)} ist selbst mit einer 6.0 in BKU nicht mehr zu erreichen. Die maximal mögliche Gesamtnote beträgt ${maxNote}.`;
+                resultBox.className = 'p-4 rounded-xl text-center shadow-md bg-red-200 transition-all duration-300';
+            }
+        }
+    </script>
+
+</body>
+</html>
